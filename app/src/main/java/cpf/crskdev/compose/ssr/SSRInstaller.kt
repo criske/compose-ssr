@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.net.Uri
 import android.os.Bundle
+import cpf.crskdev.compose.ssr.backend.Response
 import cpf.crskdev.compose.ssr.backend.SSRService
 import cpf.crskdev.compose.ssr.interceptors.core.Interceptor
 
@@ -14,7 +15,7 @@ class SSRInstaller(private val entryPoint: Uri) {
 
     private val interceptors: MutableSet<Interceptor> = mutableSetOf()
 
-    private lateinit var service: SSRService
+    private var service: SSRService = NoSSRService
 
     fun interceptors(vararg interceptors: Interceptor): SSRInstaller {
         this.interceptors.addAll(interceptors)
@@ -66,5 +67,11 @@ class SSRInstaller(private val entryPoint: Uri) {
         val interceptors: Set<Interceptor>,
         val service: SSRService
     )
+
+    private object NoSSRService: SSRService {
+        override suspend fun request(uri: Uri, body: String): Response {
+            throw IllegalStateException("An SSRService must be installed!")
+        }
+    }
 
 }
