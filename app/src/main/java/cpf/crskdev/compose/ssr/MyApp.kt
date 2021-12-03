@@ -11,6 +11,7 @@ import cpf.crskdev.compose.ssr.backend.handlers.LoginSSRHandler
 import cpf.crskdev.compose.ssr.interceptors.DashboardScreenInterceptor
 import cpf.crskdev.compose.ssr.interceptors.LoginScreenInterceptor
 import cpf.crskdev.compose.ssr.interceptors.SplashScreenInterceptor
+import cpf.crskdev.compose.ssr.interceptors.loginScreenInterceptor
 
 /**
  * Created by Cristian Pela on 03.12.2021.
@@ -24,7 +25,7 @@ class MyApp : Application() {
         SSRInstaller(entryPoint)
             .interceptors(
                 SplashScreenInterceptor(entryPoint),
-                LoginScreenInterceptor(gson),
+                loginScreenInterceptor(gson),
                 DashboardScreenInterceptor(gson)
             )
             .service(

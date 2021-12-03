@@ -7,6 +7,7 @@ import cpf.crskdev.compose.ssr.*
 import cpf.crskdev.compose.ssr.backend.Response
 import cpf.crskdev.compose.ssr.interceptors.core.Interceptor
 import cpf.crskdev.compose.ssr.interceptors.core.Request
+import cpf.crskdev.compose.ssr.interceptors.dsl.interceptor
 
 /**
  * Created by Cristian Pela on 21.11.2021.
@@ -77,5 +78,62 @@ class LoginScreenInterceptor(private val gson: Gson) : Interceptor {
 
     override fun acceptFromClient(uri: Uri): Boolean = uriMatcher.match(uri) == LOGIN_ACTION
 
-    override fun acceptScreen(id: String): Boolean  = id == "loginScreen"
+    override fun acceptScreen(id: String): Boolean = id == "loginScreen"
+}
+
+val loginScreenInterceptor: (Gson) -> Interceptor = { gson ->
+
+    interceptor {
+
+        fromClient(Uri.parse("https://ssr/login")) {
+            val (username, password) = gson.read(request.jsonBody) { map ->
+                map.value<String>("username").trim() to map.value<String>("password").trim()
+            }
+            if (username.isBlank() || password.isBlank()) {
+                sendBackToClient(
+                    Response(
+                        request.uri,
+                        gson.edit(request.currentScreen) { map ->
+                            val form = map.arr("content/children")
+                            form[1]["text"] = username // keep the username filled
+                            form[4]["text"] = "Username and password must be filled!" // error message
+                        }
+                    )
+                )
+            } else {
+                sendBackToClient(
+                    Response(
+                        request.uri,
+                        gson.edit(request.currentScreen) { map ->
+                            val form = map.arr("content/children")
+                            form[1]["text"] = username // keep the username filled
+                            form[2]["text"] = password // keep password filled
+                            form[3]["disabled"] = true // disable login button while request is processed by server
+                            form[4]["text"] = "" // clear the errors
+                        }
+                    )
+                )
+                forward(request)
+            }
+        }
+
+        onCompose("loginScreen") { interactor ->
+            id<Component.Button>("loginBtn") {
+                onClick = {
+                    val username = id<Component.TextField>("inputUserName")!!.text
+                    val password = id<Component.TextField>("inputPassword")!!.text
+                    interactor.request(
+                        Uri.parse("https://ssr/login"),
+                        """
+                    {
+                        "username" : "$username",
+                        "password" : "$password"
+                    }
+                """.trimIndent()
+                    )
+                }
+            }
+        }
+
+    }
 }
