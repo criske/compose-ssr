@@ -2,8 +2,6 @@
 
 package cpf.crskdev.compose.ssr
 
-import android.app.Application
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,17 +12,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.gson.Gson
-import cpf.crskdev.compose.ssr.backend.SSRServiceDispatcher
-import cpf.crskdev.compose.ssr.interceptors.DashboardScreenInterceptor
-import cpf.crskdev.compose.ssr.interceptors.LoginScreenInterceptor
-import cpf.crskdev.compose.ssr.interceptors.SplashScreenInterceptor
 import cpf.crskdev.compose.ssr.interceptors.core.InterceptorManager
 import cpf.crskdev.compose.ssr.interceptors.core.InterceptorManagerImpl
 
-class MainActivity : ComponentActivity() {
-
-    private val entryPoint = Uri.parse("https://ssr/")
+class SSRActivity : ComponentActivity() {
 
     private lateinit var installerParts: SSRInstaller.Parts
 

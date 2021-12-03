@@ -30,7 +30,7 @@ class SSRInstaller(private val entryPoint: Uri) {
     fun install(application: Application) {
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-                if (activity is MainActivity) {
+                if (activity is SSRActivity) {
                     activity.install(Parts(entryPoint, interceptors, service))
                 }
             }
