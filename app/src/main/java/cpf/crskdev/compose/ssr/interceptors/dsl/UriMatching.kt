@@ -1,4 +1,4 @@
-package cpf.crskdev.compose.ssr.interceptors.core
+package cpf.crskdev.compose.ssr.interceptors.dsl
 
 import android.content.UriMatcher
 import android.net.Uri
