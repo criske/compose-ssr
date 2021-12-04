@@ -4,6 +4,7 @@ import android.net.Uri
 import cpf.crskdev.compose.ssr.ComponentContext
 import cpf.crskdev.compose.ssr.Interactor
 import cpf.crskdev.compose.ssr.backend.Response
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Created by Cristian Pela on 21.11.2021.
@@ -24,7 +25,7 @@ interface Interceptor {
         forward(response)
     }
 
-    fun ComponentContext.onCompose(interactor: Interactor) {
+    suspend fun ComponentContext.onCompose(interactor: Interactor, coroutineScope: CoroutineScope) {
 
     }
 

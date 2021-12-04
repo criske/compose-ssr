@@ -11,6 +11,7 @@ import cpf.crskdev.compose.ssr.backend.Response
 import cpf.crskdev.compose.ssr.edit
 import cpf.crskdev.compose.ssr.interceptors.core.Interceptor
 import cpf.crskdev.compose.ssr.interceptors.core.Request
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
@@ -77,7 +78,7 @@ class DashboardScreenInterceptor(private val gson: Gson) : Interceptor {
         forward(response.copy(data = edited))
     }
 
-    override fun ComponentContext.onCompose(interactor: Interactor) {
+    override suspend fun ComponentContext.onCompose(interactor: Interactor, coroutineScope: CoroutineScope) {
         id<Component.Group.PagedList>("list") {
             onPageEndReached = { page ->
                 interactor.debugToast("Reached end of page ${page.number}")

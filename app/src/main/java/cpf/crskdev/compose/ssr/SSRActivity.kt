@@ -6,10 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import cpf.crskdev.compose.ssr.interceptors.core.InterceptorManager
@@ -58,10 +55,12 @@ fun App(component: Component, interceptorManager: InterceptorManager, interactor
         mutableStateOf(component)
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
     Screen(screen) {
         if (component is Component.Group.Screen) {
             interceptorManager.apply {
-                onCompose(component.id, interactor)
+                onCompose(component.id, interactor, coroutineScope)
             }
         }
     }

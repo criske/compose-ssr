@@ -6,6 +6,7 @@ import cpf.crskdev.compose.ssr.Interactor
 import cpf.crskdev.compose.ssr.backend.Response
 import cpf.crskdev.compose.ssr.interceptors.core.Interceptor
 import cpf.crskdev.compose.ssr.interceptors.core.Request
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Created by Cristian Pela on 03.12.2021.
@@ -20,16 +21,24 @@ internal class InterceptorDSL(private val callbacksDescriptor: CallbacksDescript
         callbacksDescriptor.fromClient?.applyScope(request, sendBackToClient, forward)
     }
 
-    override fun acceptFromClient(uri: Uri): Boolean = uri == this.callbacksDescriptor.fromClient?.uri
+    override fun acceptFromClient(uri: Uri): Boolean = this
+        .callbacksDescriptor
+        .fromClient
+        ?.matching
+        ?.matches(uri) == true
 
     override suspend fun interceptFromServer(response: Response, forward: suspend (Response) -> Unit) {
         callbacksDescriptor.fromServer?.applyScope(response, forward)
     }
 
-    override fun acceptFromServer(uri: Uri): Boolean = uri == this.callbacksDescriptor.fromServer?.uri
+    override fun acceptFromServer(uri: Uri): Boolean = this
+        .callbacksDescriptor
+        .fromServer
+        ?.matching
+        ?.matches(uri) == true
 
-    override fun ComponentContext.onCompose(interactor: Interactor) {
-        callbacksDescriptor.onCompose?.applyScope(this, interactor)
+    override suspend fun ComponentContext.onCompose(interactor: Interactor, coroutineScope: CoroutineScope) {
+        callbacksDescriptor.onCompose?.applyScope(this, interactor, coroutineScope)
     }
 
     override fun acceptScreen(id: String): Boolean = id == this.callbacksDescriptor.onCompose?.screenId

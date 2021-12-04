@@ -3,6 +3,7 @@ package cpf.crskdev.compose.ssr.interceptors.core
 import cpf.crskdev.compose.ssr.ComponentContext
 import cpf.crskdev.compose.ssr.Interactor
 import cpf.crskdev.compose.ssr.backend.Response
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -14,5 +15,5 @@ interface InterceptorManager {
 
     fun responseFlow(): StateFlow<Response>
 
-    fun ComponentContext.onCompose(screenId: String, interactor: Interactor)
+    suspend fun ComponentContext.onCompose(screenId: String, interactor: Interactor, coroutineScope: CoroutineScope)
 }

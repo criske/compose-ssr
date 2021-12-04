@@ -2,13 +2,14 @@ package cpf.crskdev.compose.ssr.interceptors.dsl
 
 import android.net.Uri
 import cpf.crskdev.compose.ssr.backend.Response
+import cpf.crskdev.compose.ssr.interceptors.core.UriMatching
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class FromServer(
-    internal val uri: Uri,
+    internal val matching: UriMatching,
     private val scopeBlock: suspend FromServer.Scope.(CoroutineScope) -> Unit
 ) {
 

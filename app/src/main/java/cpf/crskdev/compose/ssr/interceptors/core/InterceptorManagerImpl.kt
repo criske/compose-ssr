@@ -5,6 +5,7 @@ import cpf.crskdev.compose.ssr.ComponentContext
 import cpf.crskdev.compose.ssr.Interactor
 import cpf.crskdev.compose.ssr.backend.Response
 import cpf.crskdev.compose.ssr.backend.SSRService
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -41,10 +42,10 @@ class InterceptorManagerImpl(
 
     override fun responseFlow(): StateFlow<Response> = responseFlow
 
-    override fun ComponentContext.onCompose(screenId: String, interactor: Interactor) {
+    override suspend fun ComponentContext.onCompose(screenId: String, interactor: Interactor, coroutineScope: CoroutineScope) {
         interceptors
             .firstOrNull { it.acceptScreen(screenId) }
-            ?.apply { onCompose(interactor) }
+            ?.apply { onCompose(interactor, coroutineScope) }
     }
 
 }

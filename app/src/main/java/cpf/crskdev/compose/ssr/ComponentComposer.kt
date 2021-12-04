@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import kotlinx.coroutines.launch
 
 /**
  * Created by Cristian Pela on 20.11.2021.
@@ -22,47 +23,20 @@ import androidx.compose.ui.text.input.VisualTransformation
 @Composable
 fun Screen(
     component: Component,
-    componentContextScope: ComponentContext.(Updater) -> Unit = { }
+    componentContextScope: suspend ComponentContext.() -> Unit = { }
 ) {
-    val (screen, update) = remember(component) {
-        mutableStateOf(MutableComponent(component))
-    }
-    val componentCompose = remember(screen) {
-        ComponentComposer(screen()) {
-            this.componentContextScope(UpdaterImpl(screen, update))
+    LaunchedEffect(component) {
+        launch {
+            ComponentContext(component).componentContextScope()
         }
     }
-    componentCompose()
-}
-
-private class MutableComponent(private val component: Component) {
-
-    fun mutate(block: Component.() -> Unit = {}): MutableComponent = MutableComponent(component.apply(block))
-
-    operator fun invoke(): Component = this.component
-}
-
-
-interface Updater {
-    operator fun invoke(block: () -> Unit)
-}
-
-private class UpdaterImpl(
-    private val mutableComponent: MutableComponent,
-    private val updater: (MutableComponent) -> Unit
-) : Updater {
-
-    override operator fun invoke(block: () -> Unit) {
-        block()
-        updater(mutableComponent.mutate())
+    val componentComposer = remember(component) {
+        ComponentComposer(component)
     }
+    componentComposer()
 }
 
-private fun ComponentComposer(
-    component: Component,
-    lookUpScope: ComponentContext.() -> Unit = {}
-): @Composable () -> Unit {
-    ComponentContext(component).apply(lookUpScope)
+private fun ComponentComposer(component: Component): @Composable () -> Unit {
     fun ComponentComposerInternal(component: Component): @Composable () -> Unit =
         when (component) {
             is Component.Group.Container -> ({

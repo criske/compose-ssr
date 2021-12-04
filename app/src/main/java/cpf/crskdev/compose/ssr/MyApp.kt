@@ -9,7 +9,6 @@ import cpf.crskdev.compose.ssr.backend.SSRServiceDispatcher
 import cpf.crskdev.compose.ssr.backend.handlers.DashboardSSRHandler
 import cpf.crskdev.compose.ssr.backend.handlers.LoginSSRHandler
 import cpf.crskdev.compose.ssr.interceptors.DashboardScreenInterceptor
-import cpf.crskdev.compose.ssr.interceptors.LoginScreenInterceptor
 import cpf.crskdev.compose.ssr.interceptors.SplashScreenInterceptor
 import cpf.crskdev.compose.ssr.interceptors.loginScreenInterceptor
 
