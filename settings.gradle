@@ -8,3 +8,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "compose-ssr"
 include ':app'
+include ':samples'
+include ':ssr-compose'
