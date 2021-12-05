@@ -3,18 +3,32 @@ Proof of concept of using server side rendering with jetpack compose
 
 
 Key components:
-- SSRService: gateway to the the remote server renderer. For testing purposes this POF comes witha fake SSRService that can be used locally instead. FakeSSRService.
-- ComponentComposer: takes the tree of Components resulted from deserializing remote json obtained via SSRService and map them to composable ui functions. For deserialization see ComponentDeserializer.
+- SSRService: gateway to the remote server renderer. For testing purposes this POF comes with a fake SSRService that can be used locally instead (`FakeSSRService`).
+- ComponentComposer: takes the tree of Components resulted from deserializing the remote json obtained via SSRService and map them to composable ui functions. For deserialization see ComponentDeserializer.
 - Android specifics:
     - SSRActivity: bootstrap the ComponentComposer's composables.
     - SSRViewModel: provides deserialized Components to ComponentComposer as StateFlow. It also provides backstack support.
 
-- Interceptors: These are the main controllers of the application and must be implemented by client. They sit between SSRViewModel and SSRService and can intercept requests and responses. They also are responsible for interaction between the SSRActivity and SSRViewModel, via a Interactor interface. They have the following the interception callbacks:
+- Interceptors: These are the main controllers of the application and must be implemented by client. They sit between SSRViewModel and SSRService and can intercept requests and responses. They also are responsible for interaction between the SSRActivity and SSRViewModel, via a Interactor interface. They have the following the interception point:
     - `interceptFromClient` intercepts requests from client to server. must be paired with `acceptFromClient(UriMatching)`
     - `interceptFromServer` intercepts responses from server to client. must be paired with `acceptFromServer(UriMatching)`
-    - `onInteract` interaction with SSRViewModel. The provided `ComponentContext` selects components by their id. must be paired `acceptInteractScreen(screenId)`
-    - `onCompose` takes control for generating ui composables functions for a screen instead of letting the `ComponentComposer` to the take care of it. must be paired with `acceptComposeScreen(screenId)`.
-    For convenience the framework provides a DSL to create Interactors.
+    - `onInteract` interaction with SSRViewModel. The provided `ComponentContext` selects components by their id. For example here is where you register click listeners. must be paired with `acceptInteractScreen(screenId)`
+    - `onCompose` takes control for generating ui composables functions for a screen instead of letting the `ComponentComposer` to do its job. Also provided with `ComponentContext`. must be paired with `acceptComposeScreen(screenId)`. Here is an example:
+    ```kotlin
+    //dsl
+    interceptor {
+        onCompose("loginScreen")  {
+            @Composable {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    id<Component.Text>("title") {
+                        Text(text = text, modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+            }
+        }    
+    }
+    ```
+    For convenience the framework provides a DSL to create interceptor.
 
 - SSRInstaller: setup builder to add interceptors, specify the SSRService implementation and the initial uri entry point for the remote server. The SSRInstaller must be installed in an `Application#onCreate()`
 
@@ -27,7 +41,7 @@ Note: for now the the frawework follows a specific json schema and using Gson.  
 ## Example: clicker
 
 After 3 clicks app ends.
-Uses a FakeSSRService with 3 seconds resonse latency.
+Uses a FakeSSRService with 3 seconds response latency.
 
 installing
 ```kotlin
@@ -51,7 +65,7 @@ class MyApp : Application() {
 }
 ```
 
-fake ssr handler (in a real scenario this is the server job):
+fake ssr handler (in a real scenario this is remote server's job):
 ```kotlin
 class ClickerSSRHandler : SSRHandler {
 
