@@ -1,4 +1,4 @@
-package cpf.crskdev.compose.ssr.interceptors
+package cpf.crskdev.compose.samples.login.interceptors
 
 import android.net.Uri
 import cpf.crskdev.compose.ssr.backend.Response

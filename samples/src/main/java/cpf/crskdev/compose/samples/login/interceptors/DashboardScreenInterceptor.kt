@@ -1,4 +1,4 @@
-package cpf.crskdev.compose.ssr.interceptors
+package cpf.crskdev.compose.samples.login.interceptors
 
 import android.content.UriMatcher
 import android.net.Uri
@@ -44,12 +44,12 @@ class DashboardScreenInterceptor(private val gson: Gson) : Interceptor {
                 gson.edit(request.currentScreen) { map ->
                     val comp = map.obj("content/children[1]")
                     val arr = comp.arr("children") as ArrayList
-                    val start = request.page.itemsSize
-                    val end = (start + request.page.size).coerceAtMost(cacheList.size)
+                    val start = request.page!!.itemsSize
+                    val end = (start + request.page!!.size).coerceAtMost(cacheList.size)
                     arr.addAll(cacheList.subList(start, end))
-                    comp["pageNo"] = request.page.number + 1
-                    comp["pageSize"] = request.page.size
-                    comp["pageTotal"] = request.page.total
+                    comp["pageNo"] = request.page!!.number + 1
+                    comp["pageSize"] = request.page!!.size
+                    comp["pageTotal"] = request.page!!.total
                 }
             }
             sendBackToClient(Response(request.uri, edited))

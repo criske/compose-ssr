@@ -1,4 +1,4 @@
-package cpf.crskdev.compose.ssr.interceptors
+package cpf.crskdev.compose.samples.login.interceptors
 
 /**
  * Created by Cristian Pela on 21.11.2021.
