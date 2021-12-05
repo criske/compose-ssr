@@ -1,6 +1,7 @@
 package cpf.crskdev.compose.ssr.interceptors.core
 
 import android.net.Uri
+import androidx.compose.runtime.Composable
 import cpf.crskdev.compose.ssr.ComponentContext
 import cpf.crskdev.compose.ssr.Interactor
 import cpf.crskdev.compose.ssr.backend.Response
@@ -42,10 +43,16 @@ class InterceptorManagerImpl(
 
     override fun responseFlow(): StateFlow<Response> = responseFlow
 
-    override suspend fun ComponentContext.onCompose(screenId: String, interactor: Interactor, coroutineScope: CoroutineScope) {
+    override suspend fun onInteract(screenId: String, context: ComponentContext, interactor: Interactor, coroutineScope: CoroutineScope) {
         interceptors
-            .firstOrNull { it.acceptScreen(screenId) }
-            ?.apply { onCompose(interactor, coroutineScope) }
+            .firstOrNull { it.acceptInteractScreen(screenId) }
+            ?.apply { context.onInteract(interactor, coroutineScope) }
     }
+
+
+    override fun onCompose(screenId: String, context: ComponentContext): (@Composable () -> Unit)? =
+        interceptors
+            .firstOrNull { it.acceptComposeScreen(screenId) }
+            ?.run { context.onCompose() }
 
 }

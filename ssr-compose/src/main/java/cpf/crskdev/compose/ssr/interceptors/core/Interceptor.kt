@@ -1,6 +1,7 @@
 package cpf.crskdev.compose.ssr.interceptors.core
 
 import android.net.Uri
+import androidx.compose.runtime.Composable
 import cpf.crskdev.compose.ssr.ComponentContext
 import cpf.crskdev.compose.ssr.Interactor
 import cpf.crskdev.compose.ssr.backend.Response
@@ -25,14 +26,17 @@ interface Interceptor {
         forward(response)
     }
 
-    suspend fun ComponentContext.onCompose(interactor: Interactor, coroutineScope: CoroutineScope) {
-
+    suspend fun ComponentContext.onInteract(interactor: Interactor, coroutineScope: CoroutineScope) {
     }
+
+    fun ComponentContext.onCompose(): @Composable () -> Unit = {}
 
     fun acceptFromServer(uri: Uri): Boolean = false
 
     fun acceptFromClient(uri: Uri): Boolean = false
 
-    fun acceptScreen(id: String): Boolean = false
+    fun acceptInteractScreen(id: String): Boolean = false
+
+    fun acceptComposeScreen(id: String): Boolean = false
 
 }

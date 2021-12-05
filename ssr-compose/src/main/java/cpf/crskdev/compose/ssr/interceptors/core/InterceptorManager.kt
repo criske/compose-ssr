@@ -1,5 +1,6 @@
 package cpf.crskdev.compose.ssr.interceptors.core
 
+import androidx.compose.runtime.Composable
 import cpf.crskdev.compose.ssr.ComponentContext
 import cpf.crskdev.compose.ssr.Interactor
 import cpf.crskdev.compose.ssr.backend.Response
@@ -15,5 +16,7 @@ interface InterceptorManager {
 
     fun responseFlow(): StateFlow<Response>
 
-    suspend fun ComponentContext.onCompose(screenId: String, interactor: Interactor, coroutineScope: CoroutineScope)
+    suspend fun onInteract(screenId: String, context: ComponentContext, interactor: Interactor, coroutineScope: CoroutineScope)
+
+    fun onCompose(screenId: String, context: ComponentContext): (@Composable () -> Unit)?
 }

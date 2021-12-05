@@ -10,7 +10,7 @@ import kotlinx.coroutines.coroutineScope
  */
 class FromClient(
     internal val matching: UriMatching,
-    private val blockScope: suspend FromClient.Scope.(CoroutineScope) -> Unit) {
+    private val callback: suspend FromClient.Scope.(CoroutineScope) -> Unit) {
 
     interface Scope {
         val request: Request
@@ -33,7 +33,7 @@ class FromClient(
 
         }
         coroutineScope {
-            scope.blockScope(this)
+            scope.callback(this)
         }
     }
 }

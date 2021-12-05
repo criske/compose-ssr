@@ -1,12 +1,16 @@
 package cpf.crskdev.compose.ssr.interceptors.dsl
 
+import androidx.compose.runtime.Composable
 import cpf.crskdev.compose.ssr.ComponentContext
-import cpf.crskdev.compose.ssr.Interactor
-import kotlinx.coroutines.CoroutineScope
 
-class OnCompose(val screenId: String, private val block: suspend ComponentContext.(Interactor, CoroutineScope) -> Unit) {
+/**
+ * Created by Cristian Pela on 05.12.2021.
+ */
+class OnCompose(
+    internal val screenId: String,
+    private val callback: ComponentContext.() -> @Composable () -> Unit
+) {
 
-    suspend fun applyScope(componentContext: ComponentContext, interactor: Interactor, coroutineScope: CoroutineScope) {
-        componentContext.block(interactor, coroutineScope)
-    }
+    fun applyScope(componentContext: ComponentContext): @Composable () -> Unit =
+        componentContext.run(callback)
 }

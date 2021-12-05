@@ -3,6 +3,7 @@ package cpf.crskdev.compose.ssr
 import android.app.Application
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.GsonBuilder
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.map
  * Created by Cristian Pela on 20.11.2021.
  */
 //TODO: DON'T USE AndroidViewModel in future. Right now I'm using app context to show toasts in debug
+@ExperimentalUnitApi
 class ComponentViewModel(
     private val entryPoint: Uri,
     private val interceptorManager: InterceptorManager,

@@ -30,36 +30,68 @@ class LoginSSRHandler(private val gson: Gson) : SSRHandler {
         "id": "loginScreen",
         "type": "screen",
         "history": false,
-        "path": "/",
+        "theme": {
+            "colors" : {
+                "primary": "#32826C",
+                "primary-variant" : "#073042",
+                "background" : "#C1C1C1"
+            }
+        },
         "content": {
             "id": "container",
             "type": "container",
+            "alignment" : {
+                 "main-axis"  : "center",
+                 "cross-axis" : "center"
+            },
             "children" : [
                 {
-                    "id": "title",
-                    "type": "text",
-                    "text": "Login form"
-                },
-                {
-                    "id": "inputUserName",
-                    "type": "edit",
-                    "label": "Username"
-                },
-                {
-                    "id": "inputPassword",
-                    "type": "edit",
-                    "editType": "password",
-                    "label": "Password"
-                },
-                {
-                    "id": "loginBtn",
-                    "type": "button",
-                    "text": "Login"
-                },
-                {
-                    "id": "error",
-                    "type": "text",
-                    "text": ""
+                    "id": "form",
+                    "type": "container",
+                    "width": "0.8fr",
+                    "background" : "#C2F261",
+                    "alignment" : {
+                        "cross-axis" : "center",
+                        "main-axis" : "12spacing"
+                    },
+                    "padding" : "0,8,0,16",
+                    "children": [
+                        {
+                            "id": "title",
+                            "type": "text",
+                            "text": "Login form",
+                            "style": {
+                                "font-weight" : 600,
+                                "font-size": 24
+                            }
+                        },
+ 			            {
+                            "id": "inputUserName",
+                            "type": "edit",
+                            "label": "Username"
+                        },
+                        {
+                            "id": "inputPassword",
+                            "type": "edit",
+                            "editType": "password",
+                            "label": "Password"
+                        },
+                        {
+                            "id": "error",
+                            "type": "text",
+                            "text": "",
+                            "style": {
+                                "color": "#EB3223",
+                                "font-weight" : 600
+                            } 
+                        },   
+                        {
+                            "id": "loginBtn",
+                            "type": "button",
+                            "text": "Login",
+                            "width": "0.85fr"
+                        }                   
+                    ]
                 }
             ]
         }
@@ -97,9 +129,9 @@ class LoginSSRHandler(private val gson: Gson) : SSRHandler {
 
     private fun error(message: String, username: String): String =
         gson.edit(TEMPLATE) { json ->
-            val form = json.arr("content/children")
+            val form = json.arr("content/children[0]/children")
             form[1]["text"] = username // keep the username filled
-            form[4]["text"] = message // error message
+            form[3]["text"] = message // error message
         }
 
 }

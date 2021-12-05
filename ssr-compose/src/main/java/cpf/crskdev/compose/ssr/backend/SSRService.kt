@@ -9,6 +9,8 @@ import kotlinx.coroutines.delay
 
 /**
  * Created by Cristian Pela on 20.11.2021.
+ *
+ * Gateway to a render server.
  */
 interface SSRService {
 
@@ -16,10 +18,15 @@ interface SSRService {
 
 }
 
-class SSRServiceDispatcher(private val handlers: List<SSRHandler>) : SSRService {
+class FakeSSRService(
+    private val handlers: List<SSRHandler>,
+    private val latencyMillis: Long = 0,
+) : SSRService {
 
     override suspend fun request(uri: Uri, body: String): Response = coroutineScope {
-       // delay(3000)
+        if(latencyMillis > 0){
+            delay(latencyMillis)
+        }
         val handler = handlers.firstOrNull { it.accept(uri) } ?: FallbackSSRHandler
         var result = handler.handle(uri, body)
         while (result is Rendered.Redirect) {
@@ -52,3 +59,4 @@ class SSRServiceDispatcher(private val handlers: List<SSRHandler>) : SSRService 
 
     }
 }
+

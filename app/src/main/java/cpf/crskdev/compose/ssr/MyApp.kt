@@ -5,7 +5,7 @@ package cpf.crskdev.compose.ssr
 import android.app.Application
 import android.net.Uri
 import com.google.gson.Gson
-import cpf.crskdev.compose.ssr.backend.SSRServiceDispatcher
+import cpf.crskdev.compose.ssr.backend.FakeSSRService
 import cpf.crskdev.compose.ssr.backend.handlers.DashboardSSRHandler
 import cpf.crskdev.compose.ssr.backend.handlers.LoginSSRHandler
 import cpf.crskdev.compose.ssr.interceptors.DashboardScreenInterceptor
@@ -28,11 +28,12 @@ class MyApp : Application() {
                 DashboardScreenInterceptor(gson)
             )
             .service(
-                SSRServiceDispatcher(
+                FakeSSRService(
                     listOf(
                         LoginSSRHandler(gson),
                         DashboardSSRHandler()
-                    )
+                    ),
+                    latencyMillis = 2000
                 )
             )
             .install(this)

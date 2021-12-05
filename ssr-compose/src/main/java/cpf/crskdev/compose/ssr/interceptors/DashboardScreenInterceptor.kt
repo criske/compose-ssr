@@ -78,7 +78,7 @@ class DashboardScreenInterceptor(private val gson: Gson) : Interceptor {
         forward(response.copy(data = edited))
     }
 
-    override suspend fun ComponentContext.onCompose(interactor: Interactor, coroutineScope: CoroutineScope) {
+    override suspend fun ComponentContext.onInteract(interactor: Interactor, coroutineScope: CoroutineScope) {
         id<Component.Group.PagedList>("list") {
             onPageEndReached = { page ->
                 interactor.debugToast("Reached end of page ${page.number}")
@@ -91,5 +91,5 @@ class DashboardScreenInterceptor(private val gson: Gson) : Interceptor {
 
     override fun acceptFromClient(uri: Uri): Boolean = matcher.match(uri) == URI_MATCH
 
-    override fun acceptScreen(id: String): Boolean = id == "dashboardScreen"
+    override fun acceptInteractScreen(id: String): Boolean = id == "dashboardScreen"
 }

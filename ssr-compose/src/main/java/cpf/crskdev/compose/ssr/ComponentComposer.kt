@@ -2,19 +2,21 @@
 
 package cpf.crskdev.compose.ssr
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.LayoutModifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import cpf.crskdev.compose.ssr.interceptors.core.InterceptorManager
 import kotlinx.coroutines.launch
 
 /**
@@ -22,16 +24,20 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun Screen(
-    component: Component,
-    componentContextScope: suspend ComponentContext.() -> Unit = { }
+    component: Component.Group.Screen,
+    interceptorManager: InterceptorManager,
+    interactor: Interactor
 ) {
+    val context = remember(component) { ComponentContext(component) }
+
     LaunchedEffect(component) {
         launch {
-            ComponentContext(component).componentContextScope()
+            interceptorManager.onInteract(component.id, context, interactor, this)
         }
     }
+
     val componentComposer = remember(component) {
-        ComponentComposer(component)
+        interceptorManager.onCompose(component.id, context) ?: ComponentComposer(component)
     }
     componentComposer()
 }
@@ -40,7 +46,16 @@ private fun ComponentComposer(component: Component): @Composable () -> Unit {
     fun ComponentComposerInternal(component: Component): @Composable () -> Unit =
         when (component) {
             is Component.Group.Container -> ({
-                Column(modifier = component.modifier.fillMaxSize()) {
+                Column(
+                    modifier = if (component.modifier.any { it is LayoutModifier })
+                        component.modifier
+                    else
+                        Modifier
+                            .fillMaxSize()
+                            .then(component.modifier), // fill max if there is no width or height specified
+                    verticalArrangement = component.modifier.attr("main-axis-alignment", Arrangement.Top),
+                    horizontalAlignment = component.modifier.attr("cross-axis-alignment", Alignment.Start)
+                ) {
                     for (child in component.children) {
                         key(child.id) {
                             ComponentComposerInternal(child)()
@@ -77,7 +92,11 @@ private fun ComponentComposer(component: Component): @Composable () -> Unit {
                 }
             })
             is Component.Text -> ({
-                Text(text = component.text, modifier = component.modifier)
+                Text(
+                    text = component.text,
+                    modifier = component.modifier,
+                    style = component.modifier.attr("style", LocalTextStyle.current)
+                )
             })
             is Component.Button -> ({
                 Button(

@@ -1,6 +1,12 @@
 package cpf.crskdev.compose.ssr.interceptors
 
 import android.net.Uri
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import com.google.gson.Gson
 import cpf.crskdev.compose.ssr.Component
 import cpf.crskdev.compose.ssr.backend.Response
@@ -31,9 +37,9 @@ val loginScreenInterceptor: (Gson) -> Interceptor = { gson ->
                     Response(
                         request.uri,
                         gson.edit(request.currentScreen) { map ->
-                            val form = map.arr("content/children")
+                            val form = map.arr("content/children[0]/children")
                             form[1]["text"] = username // keep the username filled
-                            form[4]["text"] = "Username and password must be filled!" // error message
+                            form[3]["text"] = "Username and password must be filled!" // error message
                         }
                     )
                 )
@@ -42,11 +48,11 @@ val loginScreenInterceptor: (Gson) -> Interceptor = { gson ->
                     Response(
                         request.uri,
                         gson.edit(request.currentScreen) { map ->
-                            val form = map.arr("content/children")
+                            val form = map.arr("content/children[0]/children")
                             form[1]["text"] = username // keep the username filled
                             form[2]["text"] = password // keep password filled
-                            form[3]["disabled"] = true // disable login button while request is processed by server
-                            form[4]["text"] = "" // clear the errors
+                            form[3]["text"] = "" // clear the errors
+                            form[4]["disabled"] = true // disable login button while request is processed by server
                         }
                     )
                 )
@@ -54,7 +60,7 @@ val loginScreenInterceptor: (Gson) -> Interceptor = { gson ->
             }
         }
 
-        onCompose("loginScreen") { interactor, _ ->
+        onInteract("loginScreen") { interactor, _ ->
 
             id<Component.Button>("loginBtn")
                 ?.clickFlow<InputCredentials>(300) { emit ->
@@ -75,6 +81,16 @@ val loginScreenInterceptor: (Gson) -> Interceptor = { gson ->
                     )
                 }
         }
+
+//        onCompose("loginScreen")  {
+//            @Composable {
+//                Box(modifier = Modifier.fillMaxSize()) {
+//                    id<Component.Text>("title") {
+//                        Text(text = text, modifier = Modifier.align(Alignment.Center))
+//                    }
+//                }
+//            }
+//        }
     }
 }
 

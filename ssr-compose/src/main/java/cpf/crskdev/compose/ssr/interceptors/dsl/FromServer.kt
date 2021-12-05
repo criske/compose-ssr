@@ -6,7 +6,7 @@ import kotlinx.coroutines.coroutineScope
 
 class FromServer(
     internal val matching: UriMatching,
-    private val scopeBlock: suspend FromServer.Scope.(CoroutineScope) -> Unit
+    private val callback: suspend FromServer.Scope.(CoroutineScope) -> Unit
 ) {
 
     interface Scope {
@@ -22,7 +22,7 @@ class FromServer(
                 get() = forward
         }
         coroutineScope {
-            scope.scopeBlock(this)
+            scope.callback(this)
         }
     }
 }
