@@ -16,7 +16,7 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-       // ClickerSetup.install(this)
+       ClickerSetup.install(this)
         LoginSetup.install(this)
     }
 }
