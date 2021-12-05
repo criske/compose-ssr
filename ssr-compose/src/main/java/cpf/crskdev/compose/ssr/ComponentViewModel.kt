@@ -70,7 +70,7 @@ class ComponentViewModel(
         val willBeEmpty = _state.value.willBeEmpty
         if (!willBeEmpty)
             _state.value = _state.value.pop()
-        return willBeEmpty
+        return !willBeEmpty
     }
 
     override fun request(uri: Uri, jsonBody: String, page: Page?) {

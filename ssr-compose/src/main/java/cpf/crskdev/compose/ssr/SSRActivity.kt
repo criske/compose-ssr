@@ -80,7 +80,7 @@ class SSRActivity : ComponentActivity() {
         }
 
     override fun onBackPressed() {
-        if (viewModel.onBackPressed()) {
+        if (!viewModel.onBackPressed()) {
             super.onBackPressed()
         }
     }
@@ -92,7 +92,11 @@ class SSRActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(component: Component, interceptorManager: InterceptorManager, interactor: Interactor) {
+private fun App(
+    component: Component,
+    interceptorManager: InterceptorManager,
+    interactor: Interactor
+) {
     if (component is Component.Group.Screen) {
         Screen(component, interceptorManager, interactor)
     }
