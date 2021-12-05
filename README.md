@@ -51,7 +51,7 @@ class MyApp : Application() {
 }
 ```
 
-fake ssr handler (this the server job in real scenario):
+fake ssr handler (in a real scenario this is the server job):
 ```kotlin
 class ClickerSSRHandler : SSRHandler {
 
