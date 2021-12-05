@@ -165,6 +165,7 @@ val clickerInterceptor: (Gson) -> Interceptor = { gson ->
 ## Example: Two screens app (login + dashboard).
 
 The login interceptor checks if inputs are not empty sparing for an extra trip to server.
+Login json screen offers theming too. (right now only colors are supported).
 
 The dashboard interceptor offers pagination.
 
