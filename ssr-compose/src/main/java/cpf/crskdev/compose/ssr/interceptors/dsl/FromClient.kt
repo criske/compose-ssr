@@ -1,7 +1,6 @@
 package cpf.crskdev.compose.ssr.interceptors.dsl
 
 import cpf.crskdev.compose.ssr.backend.Response
-import cpf.crskdev.compose.ssr.interceptors.SplashScreenInterceptor
 import cpf.crskdev.compose.ssr.interceptors.core.Request
 import kotlinx.coroutines.*
 

@@ -1,4 +1,4 @@
-package cpf.crskdev.compose.ssr.backend.handlers
+package cpf.crskdev.compose.samples.login.backend
 
 import android.content.UriMatcher
 import android.net.Uri
