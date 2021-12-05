@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.net.Uri
 import android.os.Bundle
+import androidx.compose.ui.unit.ExperimentalUnitApi
 import cpf.crskdev.compose.ssr.backend.Response
 import cpf.crskdev.compose.ssr.backend.SSRService
 import cpf.crskdev.compose.ssr.interceptors.core.Interceptor
@@ -11,11 +12,14 @@ import cpf.crskdev.compose.ssr.interceptors.core.Interceptor
 /**
  * Created by Cristian Pela on 03.12.2021.
  */
+
 class SSRInstaller(private val entryPoint: Uri) {
 
     private val interceptors: MutableSet<Interceptor> = mutableSetOf()
 
     private var service: SSRService = NoSSRService
+
+    constructor(entryPointSrc: String) : this(Uri.parse(entryPointSrc))
 
     fun interceptors(vararg interceptors: Interceptor): SSRInstaller {
         this.interceptors.addAll(interceptors)
@@ -27,6 +31,7 @@ class SSRInstaller(private val entryPoint: Uri) {
         return this
     }
 
+    @ExperimentalUnitApi
     fun install(application: Application) {
         application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -68,7 +73,7 @@ class SSRInstaller(private val entryPoint: Uri) {
         val service: SSRService
     )
 
-    private object NoSSRService: SSRService {
+    private object NoSSRService : SSRService {
         override suspend fun request(uri: Uri, body: String): Response {
             throw IllegalStateException("An SSRService must be installed!")
         }

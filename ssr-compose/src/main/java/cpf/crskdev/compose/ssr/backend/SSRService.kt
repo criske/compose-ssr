@@ -1,9 +1,6 @@
 package cpf.crskdev.compose.ssr.backend
 
 import android.net.Uri
-import com.google.gson.Gson
-import cpf.crskdev.compose.ssr.backend.handlers.DashboardSSRHandler
-import cpf.crskdev.compose.ssr.backend.handlers.LoginSSRHandler
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
@@ -20,11 +17,12 @@ interface SSRService {
 
 class FakeSSRService(
     private val handlers: List<SSRHandler>,
-    private val latencyMillis: Long = 0,
+    private val latencyMillisProvider: () -> Long = { 0 },
 ) : SSRService {
 
     override suspend fun request(uri: Uri, body: String): Response = coroutineScope {
-        if(latencyMillis > 0){
+        val latencyMillis = latencyMillisProvider()
+        if (latencyMillis > 0) {
             delay(latencyMillis)
         }
         val handler = handlers.firstOrNull { it.accept(uri) } ?: FallbackSSRHandler

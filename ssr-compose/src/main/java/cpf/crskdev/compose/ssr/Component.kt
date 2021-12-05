@@ -36,8 +36,8 @@ sealed class Component(val id: String, val modifier: Modifier) {
                         var onPageEndReached: (Page) -> Unit = {}
         ) : Group(id = id, modifier = modifier, children = children)
 
-        class Screen(id: String, val content: Component, val history: Boolean = false, val theme: Theme) :
-            Group(id, Modifier, listOf(content)) {
+        class Screen(id: String, modifier: Modifier, val content: Component, val history: Boolean = false, val theme: Theme) :
+            Group(id, modifier, listOf(content)) {
                 data class Theme(val colors: Colors)
             }
     }

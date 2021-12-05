@@ -57,6 +57,6 @@ val MatcherConstruct.code
 
 fun Uri.exactMatching(): UriMatching = UriMatching.Exact(this)
 
-fun matching(authority: String, vararg pathCodeConstructs: Pair<String, Int>): UriMatching = pathCodeConstructs
-    .map { (authority to it) as MatcherConstruct }
+fun matching(authority: String, vararg paths: String): UriMatching = paths
+    .mapIndexed { index, path -> (authority to (path to index)) as MatcherConstruct }
     .let { UriMatching.Matcher(*it.toTypedArray()) }

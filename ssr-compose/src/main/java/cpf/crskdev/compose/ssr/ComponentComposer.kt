@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,7 +90,17 @@ private fun ComponentComposer(component: Component): @Composable () -> Unit {
                 }
             })
             is Component.Group.Screen -> ({
-                Column(modifier = Modifier.fillMaxSize()) {
+                //TODO make this a box?
+                Column(
+                    modifier = if (component.modifier.any { it is LayoutModifier })
+                        component.modifier
+                    else
+                        Modifier
+                            .fillMaxSize()
+                            .then(component.modifier),
+                    verticalArrangement = component.modifier.attr("main-axis-alignment", Arrangement.Top),
+                    horizontalAlignment = component.modifier.attr("cross-axis-alignment", Alignment.Start)
+                ) {
                     ComponentComposerInternal(component.content)()
                 }
             })

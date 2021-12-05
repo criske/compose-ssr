@@ -45,34 +45,35 @@ class ComponentDeserializer : JsonDeserializer<Component> {
             else -> Component.None
         }
 
-    private fun JsonObject.deserializeScreen(context: JsonDeserializationContext, typeOfT: Type): Component {
-        return Component.Group.Screen(
-            id = this["id"].asString,
-            content = context.deserialize(this["content"].asJsonObject, typeOfT),
-            theme = this["theme"]?.let {
-                val colors = it.asJsonObject["colors"]?.let { colorsEl ->
-                    val colorsObj = colorsEl.asJsonObject
-                    val current = lightColors()
-                    Colors(
-                        primary = colorsObj["primary"]?.asString?.toColor() ?: current.primary,
-                        primaryVariant = colorsObj["primary-variant"]?.asString?.toColor() ?: current.primaryVariant,
-                        secondary = colorsObj["secondary"]?.asString?.toColor() ?: current.secondary,
-                        secondaryVariant = colorsObj["secondary-variant"]?.asString?.toColor() ?: current.secondaryVariant,
-                        background = colorsObj["background"]?.asString?.toColor() ?: current.background,
-                        surface = colorsObj["surface"]?.asString?.toColor() ?: current.surface,
-                        error = colorsObj["primary"]?.asString?.toColor() ?: current.error,
-                        onPrimary = colorsObj["on-primary"]?.asString?.toColor() ?: current.onPrimary,
-                        onSecondary = colorsObj["on-secondary"]?.asString?.toColor() ?: current.onSecondary,
-                        onBackground = colorsObj["on-background"]?.asString?.toColor() ?: current.onBackground,
-                        onSurface = colorsObj["on-surface"]?.asString?.toColor() ?: current.onSurface,
-                        onError = colorsObj["on-error"]?.asString?.toColor() ?: current.onError,
-                        true
-                    )
-                } ?: lightColors()
-                Component.Group.Screen.Theme(colors)
-            } ?: Component.Group.Screen.Theme(lightColors())
-        )
-    }
+    private fun JsonObject.deserializeScreen(context: JsonDeserializationContext, typeOfT: Type): Component =
+        deserializePrepComponent { id, modifier ->
+            Component.Group.Screen(
+                id = id,
+                modifier = modifier,
+                content = context.deserialize(this["content"].asJsonObject, typeOfT),
+                theme = this["theme"]?.let {
+                    val colors = it.asJsonObject["colors"]?.let { colorsEl ->
+                        val colorsObj = colorsEl.asJsonObject
+                        val current = lightColors()
+                        Colors(
+                            primary = colorsObj["primary"]?.asString?.toColor() ?: current.primary,
+                            primaryVariant = colorsObj["primary-variant"]?.asString?.toColor() ?: current.primaryVariant,
+                            secondary = colorsObj["secondary"]?.asString?.toColor() ?: current.secondary,
+                            secondaryVariant = colorsObj["secondary-variant"]?.asString?.toColor() ?: current.secondaryVariant,
+                            background = colorsObj["background"]?.asString?.toColor() ?: current.background,
+                            surface = colorsObj["surface"]?.asString?.toColor() ?: current.surface,
+                            error = colorsObj["primary"]?.asString?.toColor() ?: current.error,
+                            onPrimary = colorsObj["on-primary"]?.asString?.toColor() ?: current.onPrimary,
+                            onSecondary = colorsObj["on-secondary"]?.asString?.toColor() ?: current.onSecondary,
+                            onBackground = colorsObj["on-background"]?.asString?.toColor() ?: current.onBackground,
+                            onSurface = colorsObj["on-surface"]?.asString?.toColor() ?: current.onSurface,
+                            onError = colorsObj["on-error"]?.asString?.toColor() ?: current.onError,
+                            true
+                        )
+                    } ?: lightColors()
+                    Component.Group.Screen.Theme(colors)
+                } ?: Component.Group.Screen.Theme(lightColors()))
+        }
 
     private fun JsonObject.deserializeContainer(context: JsonDeserializationContext, typeOfT: Type): Component {
         return deserializePrepComponent { id, modifier ->

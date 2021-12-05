@@ -42,8 +42,11 @@ class SSRActivity : ComponentActivity() {
         }
     }
 
+    private val appCloseHandle: () -> Unit = { finish() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.appCloseHandle = this.appCloseHandle
         setContent {
             val componentState = viewModel.state.collectAsState(initial = Component.None)
             val component = componentState.value
@@ -58,6 +61,12 @@ class SSRActivity : ComponentActivity() {
                 App(component, interceptorManager, viewModel)
             }
         }
+    }
+
+    override fun onDestroy() {
+        //cleanup to prevent leaks
+        viewModel.appCloseHandle = null
+        super.onDestroy()
     }
 
     private val Color.nativeColorInt: Int
@@ -75,6 +84,7 @@ class SSRActivity : ComponentActivity() {
             super.onBackPressed()
         }
     }
+
 
     internal fun install(parts: SSRInstaller.Parts) {
         this.installerParts = parts

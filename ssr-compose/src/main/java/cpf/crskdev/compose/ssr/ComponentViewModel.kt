@@ -39,6 +39,8 @@ class ComponentViewModel(
 
     private val ongoingRequestJobs = mutableListOf<Job>()
 
+    var appCloseHandle: (() -> Unit)? = null
+
     init {
         viewModelScope.launch(Dispatchers.Default) {
             responseStateFlow.collect {
@@ -89,6 +91,10 @@ class ComponentViewModel(
             Toast.makeText(getApplication(), message, Toast.LENGTH_SHORT).show()
     }
 
+    override fun closeApp() {
+        this.appCloseHandle?.invoke()
+    }
+
     private fun CoroutineScope.launchOngoingJob(
         dispatcher: CoroutineDispatcher = Dispatchers.Default,
         scope: suspend CoroutineScope.() -> Unit
@@ -109,4 +115,12 @@ interface Interactor {
 
     fun debugToast(message: String)
 
+    fun closeApp()
+
 }
+
+fun Interactor.request(uriStr: String, jsonBody: String = "", page: Page? = null) = request(
+    Uri.parse(uriStr),
+    jsonBody,
+    page
+)
